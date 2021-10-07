@@ -4,16 +4,20 @@ import { Room, Star } from "@material-ui/icons";
 import axios from "axios";
 import { format, register } from "timeago.js";
 import Register from "./components/Register/Register";
+import Login from "./components/Login/Login";
 import "./app.css";
 
 function App() {
-  const [currentUser,setCurrentUser] = useState(null);
+  const myStorage = window.localStorage;
+  const [currentUser, setCurrentUser] = useState(null);
   const [pins, setPins] = useState([]);
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
   const [title, setTitle] = useState(null);
   const [desc, setDesc] = useState(null);
   const [rating, setRating] = useState(0);
   const [newPlace, setNewPlace] = useState(null);
+  const [showRegister, setShowRegister] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
   const [viewport, setViewport] = useState({
     width: "100vw",
     height: "100vh",
@@ -190,11 +194,19 @@ function App() {
           <button className="button logout">Logout</button>
         ) : (
           <div className="buttons">
-            <button className="button login">Login</button>
-            <button className="button register">Register</button>
+            <button className="button login" onClick={() => setShowLogin(true)}>
+              Login
+            </button>
+            <button
+              className="button register"
+              onClick={() => setShowRegister(true)}
+            >
+              Register
+            </button>
           </div>
         )}
-        <Register/>
+        {showRegister && <Register setShowRegister={setShowRegister} />}
+        {showLogin && <Login setShowLogin={setShowLogin} myStorage={myStorage} setCurrentUser={setCurrentUser} />}
       </ReactMapGL>
     </div>
   );
