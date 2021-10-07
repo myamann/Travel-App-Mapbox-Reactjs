@@ -3,10 +3,11 @@ import ReactMapGL, { Marker, Popup } from "react-map-gl";
 import { Room, Star } from "@material-ui/icons";
 import axios from "axios";
 import { format, register } from "timeago.js";
+import Register from "./components/Register/Register";
 import "./app.css";
 
 function App() {
-  const currentUser = "zeynep";
+  const [currentUser,setCurrentUser] = useState(null);
   const [pins, setPins] = useState([]);
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
   const [title, setTitle] = useState(null);
@@ -36,9 +37,9 @@ function App() {
     getPins();
   }, []);
 
-  const handleMarkerClick = (id,lat,long) => {
+  const handleMarkerClick = (id, lat, long) => {
     setCurrentPlaceId(id);
-    setViewport({...viewport,latitude:lat,longitude:long});
+    setViewport({ ...viewport, latitude: lat, longitude: long });
   };
 
   const handleAddClick = (e) => {
@@ -49,25 +50,25 @@ function App() {
     });
   };
 
- const handleSubmit = async (e) => {
-    e.preventDefault()
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const newPin = {
-      username:currentUser,
+      username: currentUser,
       title,
       desc,
       rating,
-      lat:newPlace.lat,
-      long:newPlace.long
-    }
+      lat: newPlace.lat,
+      long: newPlace.long,
+    };
 
     try {
-      const res = await axios.post("/pins",newPin);
-      setPins([...pins,res.data]);
+      const res = await axios.post("/pins", newPin);
+      setPins([...pins, res.data]);
       setNewPlace(null);
-    }catch(err){
-      console.log(err)
+    } catch (err) {
+      console.log(err);
     }
-  }
+  };
 
   // var locale = function(number, index, totalSec) {
   //   // number: the time ago / time in number;
@@ -101,7 +102,6 @@ function App() {
         onViewportChange={(nextViewport) => setViewport(nextViewport)}
         mapStyle="mapbox://styles/honeybadgerx/ckufhx5cd37dc18ohhkbppinc"
         onDblClick={handleAddClick}
-       
       >
         {pins.map((p) => {
           return (
@@ -109,7 +109,7 @@ function App() {
               <Marker
                 latitude={p.lat}
                 longitude={p.long}
-                offsetLeft={-viewport.zoom * 3.5} //centered marker 
+                offsetLeft={-viewport.zoom * 3.5} //centered marker
                 offsetTop={-viewport.zoom * 7} //centered marker
               >
                 <Room
@@ -118,7 +118,7 @@ function App() {
                     color: p.username === currentUser ? "tomato" : "slateblue",
                     cursor: "pointer",
                   }}
-                  onClick={() => handleMarkerClick(p._id,p.lat,p.long)}
+                  onClick={() => handleMarkerClick(p._id, p.lat, p.long)}
                 />
               </Marker>
               {p._id === currentPlaceId && (
@@ -138,7 +138,6 @@ function App() {
                     <label>Rating</label>
                     <div className="stars">
                       {Array(p.rating).fill(<Star className="star" />)}
-                     
                     </div>
                     <label>Information</label>
                     <span className="username">
@@ -160,26 +159,42 @@ function App() {
             anchor="left"
             onClose={() => setNewPlace(null)}
           >
-           <div>
-             <form onSubmit={handleSubmit}>
-               <label>Title</label>
-               <input placeholder="Enter a title" onChange={(e)=>setTitle(e.target.value)}/>
-               <label>Review</label>
-               <textarea placeholder="Say us something about this place." onChange={(e)=>setDesc(e.target.value)}/>
-               <label>Rating</label>
-               <select onChange={(e)=>setRating(e.target.value)}>
-                 <option value="1">1</option>
-                 <option value="2">2</option>
-                 <option value="3">3</option>
-                 <option value="4">4</option>
-                 <option value="5">5</option>
-               </select>
-               <button className="submitButton" type="submit">Add Pin</button>
-             </form>
-           </div>
-            
+            <div>
+              <form onSubmit={handleSubmit}>
+                <label>Title</label>
+                <input
+                  placeholder="Enter a title"
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+                <label>Review</label>
+                <textarea
+                  placeholder="Say us something about this place."
+                  onChange={(e) => setDesc(e.target.value)}
+                />
+                <label>Rating</label>
+                <select onChange={(e) => setRating(e.target.value)}>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+                <button className="submitButton" type="submit">
+                  Add Pin
+                </button>
+              </form>
+            </div>
           </Popup>
         )}
+        {currentUser ? (
+          <button className="button logout">Logout</button>
+        ) : (
+          <div className="buttons">
+            <button className="button login">Login</button>
+            <button className="button register">Register</button>
+          </div>
+        )}
+        <Register/>
       </ReactMapGL>
     </div>
   );
