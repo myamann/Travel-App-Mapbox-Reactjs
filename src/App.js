@@ -9,7 +9,7 @@ import "./app.css";
 
 function App() {
   const myStorage = window.localStorage;
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(myStorage.getItem("user"));
   const [pins, setPins] = useState([]);
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
   const [title, setTitle] = useState(null);
@@ -74,6 +74,11 @@ function App() {
     }
   };
 
+  const handleLogout = () => {
+    myStorage.removeItem("user");
+    setCurrentUser(null);
+  }
+
   // var locale = function(number, index, totalSec) {
   //   // number: the time ago / time in number;
   //   // index: the index of array below;
@@ -97,6 +102,8 @@ function App() {
   // };
 
   // register('tr', locale);
+
+
 
   return (
     <div>
@@ -191,7 +198,7 @@ function App() {
           </Popup>
         )}
         {currentUser ? (
-          <button className="button logout">Logout</button>
+          <button className="button logout" onClick={handleLogout}>Logout</button>
         ) : (
           <div className="buttons">
             <button className="button login" onClick={() => setShowLogin(true)}>
