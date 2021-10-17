@@ -5,6 +5,8 @@
 Project is created with:
 * ReactJs
 * MapBox
+* Nodejs
+* Mongodb
 
 
 [Backend Repo](https://github.com/myamann/travel-app-api)
